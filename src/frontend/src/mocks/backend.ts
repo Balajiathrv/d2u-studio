@@ -157,6 +157,15 @@ export const mockBackend: backendInterface = {
     timestamp: BigInt(Date.now()),
   }),
 
+  getStats: async () => [
+    { title: "Projects Completed", value: "120+" },
+    { title: "Years of Practice", value: "12" },
+    { title: "Client Satisfaction", value: "98%" },
+    { title: "Design Awards", value: "4" },
+  ],
+
+  updateStats: async (_stats) => undefined,
+
   updateProject: async (_id: bigint, _data) => ({ __kind__: "ok" as const, ok: null }),
 
   validateAdminCredentials: async (_username: string, _password: string) => true,

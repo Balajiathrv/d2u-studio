@@ -25,6 +25,7 @@ const AdminHeroImagesPage = lazy(() => import("./pages/admin/AdminHeroImages"));
 const AdminProjectsPage = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminInquiriesPage = lazy(() => import("./pages/admin/AdminInquiries"));
 const AdminSettingsPage = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminStatsPage = lazy(() => import("./pages/admin/AdminStats"));
 
 function PageFallback() {
   return (
@@ -213,6 +214,21 @@ const adminSettingsRoute = createRoute({
   ),
 });
 
+const adminStatsRoute = createRoute({
+  getParentRoute: () => adminRootRoute,
+  path: "/admin/stats",
+  beforeLoad: () => {
+    if (!isAdminAuthenticated()) {
+      throw redirect({ to: "/admin/login" });
+    }
+  },
+  component: () => (
+    <Suspense fallback={<AdminFallback />}>
+      <AdminStatsPage />
+    </Suspense>
+  ),
+});
+
 const publicRouteTree = rootRoute.addChildren([
   indexRoute,
   projectsRoute,
@@ -229,6 +245,7 @@ const adminRouteTree = adminRootRoute.addChildren([
   adminProjectsRoute,
   adminInquiriesRoute,
   adminSettingsRoute,
+  adminStatsRoute,
 ]);
 
 // Determine which router to use based on path

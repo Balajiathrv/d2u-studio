@@ -78,13 +78,15 @@ function SkillBar({
     <div
       ref={ref}
       className="py-5"
-      style={{ borderBottom: "1px solid #1e1e1e" }}
+      style={{ borderBottom: "1px solid #252522" }}
     >
       <div className="flex justify-between items-baseline mb-3">
         <span
           style={{
-            fontFamily: "var(--font-body),'DM Sans',sans-serif",
+            fontFamily:
+              "var(--font-body),'DM Sans',-apple-system,Arial,sans-serif",
             fontSize: "0.8125rem",
+            fontWeight: 500,
             color: "#f0ede8",
             letterSpacing: "0.08em",
           }}
@@ -93,7 +95,8 @@ function SkillBar({
         </span>
         <span
           style={{
-            fontFamily: "'Cormorant Garamond',Georgia,serif",
+            fontFamily:
+              "var(--font-display),'Cormorant Garamond',Georgia,serif",
             fontSize: "1.125rem",
             fontWeight: 300,
             color: "#c9a84c",
@@ -106,7 +109,7 @@ function SkillBar({
       <div
         style={{
           height: "1px",
-          background: "#1e1e1e",
+          background: "#2a2a28",
           width: "100%",
           position: "relative",
           overflow: "hidden",
@@ -137,14 +140,27 @@ export default function About() {
       style={{ background: "#0a0a0a", color: "#f0ede8", minHeight: "100vh" }}
     >
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section style={{ paddingTop: "8rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "8rem",
+          paddingBottom: "5rem",
+          background: "#0c0c0a",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-label"
-            style={{ marginBottom: "1.75rem" }}
+            style={{
+              color: "#c9a84c",
+              fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
+              fontSize: "0.65rem",
+              fontWeight: 600,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              marginBottom: "1.75rem",
+            }}
           >
             About the Studio
           </motion.p>
@@ -154,7 +170,8 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              fontFamily: "'Cormorant Garamond',Georgia,serif",
+              fontFamily:
+                "var(--font-display), 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif",
               fontWeight: 300,
               fontSize: "clamp(3rem, 8vw, 6.5rem)",
               lineHeight: 1,
@@ -167,17 +184,30 @@ export default function About() {
             The Story of D2U Studio
           </motion.h1>
 
+          {/* Gold divider */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            style={{ height: "1px", background: "#1e1e1e", width: "100%" }}
+            style={{
+              height: "1px",
+              background:
+                "linear-gradient(to right, #c9a84c, rgba(201,168,76,0.2), transparent)",
+              width: "100%",
+            }}
           />
         </div>
       </section>
 
       {/* ── PHILOSOPHY ───────────────────────────────────────── */}
-      <section style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+          background: "#0e0d0b",
+          borderTop: "1px solid #2a2520",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
             {/* Quote */}
@@ -189,7 +219,8 @@ export default function About() {
             >
               <p
                 style={{
-                  fontFamily: "'Cormorant Garamond',Georgia,serif",
+                  fontFamily:
+                    "var(--font-display), 'Palatino Linotype', 'Book Antiqua', Georgia, serif",
                   fontWeight: 700,
                   fontStyle: "italic",
                   fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
@@ -260,7 +291,14 @@ export default function About() {
       </section>
 
       {/* ── EXPERTISE ────────────────────────────────────────── */}
-      <section style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+          background: "#0a0a0a",
+          borderTop: "1px solid #1a1a1a",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
             {/* Left label col */}
@@ -326,15 +364,29 @@ export default function About() {
       </section>
 
       {/* ── TIMELINE ─────────────────────────────────────────── */}
-      <section style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+          background: "#0e0d0b",
+          borderTop: "1px solid #2a2520",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="text-label"
-            style={{ marginBottom: "3rem" }}
+            style={{
+              color: "#c9a84c",
+              fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
+              fontSize: "0.65rem",
+              fontWeight: 600,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              marginBottom: "3rem",
+            }}
           >
             Milestones
           </motion.p>
@@ -342,7 +394,7 @@ export default function About() {
           {/* Vertical timeline */}
           <div
             style={{
-              borderLeft: "1px solid #1e1e1e",
+              borderLeft: "1px solid rgba(201,168,76,0.3)",
               paddingLeft: "2.5rem",
               display: "flex",
               flexDirection: "column",
@@ -425,7 +477,14 @@ export default function About() {
       </section>
 
       {/* ── FOUNDERS ─────────────────────────────────────────── */}
-      <section style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+          background: "#0a0a0a",
+          borderTop: "1px solid #1a1a1a",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
@@ -557,7 +616,14 @@ export default function About() {
       </section>
 
       {/* ── VALUES ───────────────────────────────────────────── */}
-      <section style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section
+        style={{
+          paddingTop: "5rem",
+          paddingBottom: "5rem",
+          background: "#0e0d0b",
+          borderTop: "1px solid #2a2520",
+        }}
+      >
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <motion.p
             initial={{ opacity: 0, y: 8 }}

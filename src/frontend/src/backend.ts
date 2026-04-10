@@ -122,6 +122,10 @@ export interface Inquiry {
     timestamp: Timestamp;
     phone: string;
 }
+export interface Stat {
+    title: string;
+    value: string;
+}
 export enum ProjectCategory {
     Interior = "Interior",
     Architectural = "Architectural",
@@ -156,6 +160,7 @@ export interface backendInterface {
     getHeroImages(): Promise<Array<string>>;
     getInquiry(id: InquiryId): Promise<Inquiry | null>;
     getProject(id: ProjectId): Promise<Project | null>;
+    getStats(): Promise<Array<Stat>>;
     listInquiries(): Promise<Array<Inquiry>>;
     listProjects(category: ProjectCategory | null): Promise<Array<Project>>;
     removeHeroImage(index: bigint): Promise<{
@@ -181,6 +186,7 @@ export interface backendInterface {
         __kind__: "err";
         err: string;
     }>;
+    updateStats(newStats: Array<Stat>): Promise<void>;
     validateAdminCredentials(username: string, password: string): Promise<boolean>;
 }
 import type { Inquiry as _Inquiry, InquiryId as _InquiryId, Project as _Project, ProjectCategory as _ProjectCategory, ProjectId as _ProjectId, ProjectInput as _ProjectInput, ServiceType as _ServiceType, Timestamp as _Timestamp } from "./declarations/backend.did.d.ts";
@@ -310,6 +316,20 @@ export class Backend implements backendInterface {
             return from_candid_opt_n16(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getStats(): Promise<Array<Stat>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getStats();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getStats();
+            return result;
+        }
+    }
     async listInquiries(): Promise<Array<Inquiry>> {
         if (this.processError) {
             try {
@@ -424,6 +444,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.updateProject(arg0, to_candid_ProjectInput_n2(this._uploadFile, this._downloadFile, arg1));
             return from_candid_variant_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async updateStats(arg0: Array<Stat>): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateStats(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateStats(arg0);
+            return result;
         }
     }
     async validateAdminCredentials(arg0: string, arg1: string): Promise<boolean> {

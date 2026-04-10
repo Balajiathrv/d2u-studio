@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { HeroSlideshow } from "../components/HeroSlideshow";
 import { useHeroImages } from "../hooks/useHeroImages";
 import { useFeaturedProjects } from "../hooks/useProjects";
-import { CATEGORY_LABELS, type Project, type ProjectCategory } from "../types";
+import { useStats } from "../hooks/useStats";
+import { CATEGORY_LABELS, type Project, ProjectCategory } from "../types";
 
 // ── Animated count-up ──────────────────────────────────────────────────────
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -42,41 +43,7 @@ function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   );
 }
 
-// ── Parallax hook ──────────────────────────────────────────────────────────
-function useParallax(factor = 0.3) {
-  const ref = useRef<HTMLElement | null>(null);
-  const [offset, setOffset] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.innerWidth < 768) return;
-    const el = ref.current;
-    if (!el) return;
-    let rafId: number;
-    const onScroll = () => {
-      rafId = requestAnimationFrame(() => {
-        const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2 - window.innerHeight / 2;
-        setOffset(center * factor);
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafId);
-    };
-  }, [factor]);
-  return { ref, offset };
-}
-
 // ── Data ───────────────────────────────────────────────────────────────────
-const STATS = [
-  { value: 120, suffix: "+", label: "Projects" },
-  { value: 12, suffix: "", label: "Years" },
-  { value: 98, suffix: "%", label: "Client Satisfaction" },
-  { value: 4, suffix: "", label: "Awards" },
-];
-
 const SERVICES = [
   {
     num: "01",
@@ -104,10 +71,10 @@ const PLACEHOLDER_PROJECTS: Project[] = [
   {
     id: 1n,
     title: "Al Baraka Residence",
-    category: "Interior" as unknown as ProjectCategory,
+    category: ProjectCategory.Interior,
     description:
       "A serene family home in Kuwait City with considered materiality throughout.",
-    imageUrls: ["/assets/generated/hero-interior.dim_1400x900.jpg"],
+    imageUrls: ["/assets/generated/project-interior-1.dim_1400x900.jpg"],
     scope: "Full Interior Design",
     materials: [],
     outcomes: "",
@@ -116,10 +83,10 @@ const PLACEHOLDER_PROJECTS: Project[] = [
   {
     id: 2n,
     title: "Seef District Office",
-    category: "Architectural" as unknown as ProjectCategory,
+    category: ProjectCategory.Architectural,
     description:
       "A contemporary commercial space shaped by the logic of light.",
-    imageUrls: ["/assets/generated/hero-interior.dim_1400x900.jpg"],
+    imageUrls: ["/assets/generated/project-architecture-1.dim_1400x900.jpg"],
     scope: "Architectural Design & Fit-out",
     materials: [],
     outcomes: "",
@@ -128,10 +95,10 @@ const PLACEHOLDER_PROJECTS: Project[] = [
   {
     id: 3n,
     title: "Marina Penthouse",
-    category: "Interior" as unknown as ProjectCategory,
+    category: ProjectCategory.Interior,
     description:
       "Luxury penthouse with panoramic skyline views and restrained palette.",
-    imageUrls: ["/assets/generated/hero-interior.dim_1400x900.jpg"],
+    imageUrls: ["/assets/generated/project-penthouse.dim_1400x900.jpg"],
     scope: "Space Planning & Interior",
     materials: [],
     outcomes: "",
@@ -140,10 +107,10 @@ const PLACEHOLDER_PROJECTS: Project[] = [
   {
     id: 4n,
     title: "Salmiya Cultural Centre",
-    category: "Architectural" as unknown as ProjectCategory,
+    category: ProjectCategory.Architectural,
     description:
       "A civic anchor designed around community gathering and natural ventilation.",
-    imageUrls: ["/assets/generated/hero-interior.dim_1400x900.jpg"],
+    imageUrls: ["/assets/generated/project-civic.dim_1400x900.jpg"],
     scope: "Architectural Design",
     materials: [],
     outcomes: "",
@@ -151,7 +118,7 @@ const PLACEHOLDER_PROJECTS: Project[] = [
   },
 ];
 
-// ── Section Label ──────────────────────────────────────────────────────────
+// ── Section Label — gold, high-visibility ─────────────────────────────────
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <motion.p
@@ -161,9 +128,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       transition={{ duration: 0.5 }}
       style={{
         color: "#c9a84c",
-        fontFamily: "var(--font-body)",
+        fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
         fontSize: "0.65rem",
-        letterSpacing: "0.22em",
+        fontWeight: 600,
+        letterSpacing: "0.28em",
         textTransform: "uppercase",
         marginBottom: "1.25rem",
       }}
@@ -177,15 +145,14 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export default function Home() {
   const { data: featured, isLoading } = useFeaturedProjects();
   const { data: heroImages = [] } = useHeroImages();
+  const stats = useStats();
   const displayProjects =
     featured && featured.length > 0 ? featured : PLACEHOLDER_PROJECTS;
-  const heroParallax = useParallax(0.4);
 
   return (
     <div style={{ background: "#0a0a0a", color: "#f0ede8" }}>
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
       <section
-        ref={heroParallax.ref as React.RefObject<HTMLElement>}
         style={{
           position: "relative",
           minHeight: "100vh",
@@ -195,49 +162,53 @@ export default function Home() {
         }}
         data-ocid="hero-section"
       >
-        <HeroSlideshow
-          images={heroImages}
-          parallaxOffset={heroParallax.offset}
-        />
+        <HeroSlideshow images={heroImages} />
 
-        {/* Bottom-right gradient ONLY — no full overlay */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            pointerEvents: "none",
-            zIndex: 2,
-            background:
-              "linear-gradient(to top left, rgba(10,10,10,0.82) 0%, rgba(10,10,10,0.35) 40%, transparent 70%)",
-          }}
-        />
-
-        {/* Hero text */}
+        {/* Hero text — always above the slideshow layers (z-index 10) */}
         <div
           style={{
             position: "relative",
-            zIndex: 3,
+            zIndex: 10,
             width: "100%",
             paddingBottom: "clamp(4rem, 8vh, 7rem)",
             paddingLeft: "clamp(1.5rem, 6vw, 6rem)",
             paddingRight: "clamp(1.5rem, 6vw, 6rem)",
           }}
         >
-          <motion.h1
-            initial={{ opacity: 0, y: 48 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          {/* Studio label */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
+              fontSize: "0.6rem",
+              fontWeight: 600,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "#c9a84c",
+              marginBottom: "1.25rem",
+            }}
+          >
+            D2U Studio — Kuwait
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontFamily:
+                "var(--font-display), 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif",
               fontStyle: "italic",
               fontWeight: 300,
-              fontSize: "clamp(3.5rem, 9vw, 8.5rem)",
-              lineHeight: 0.9,
+              fontSize: "clamp(4rem, 10vw, 9.5rem)",
+              lineHeight: 0.88,
               letterSpacing: "-0.02em",
               color: "#f0ede8",
-              marginBottom: "1.5rem",
+              marginBottom: "2rem",
               maxWidth: "18ch",
+              textShadow: "0 2px 40px rgba(0,0,0,0.6)",
             }}
             data-ocid="hero-heading"
           >
@@ -245,135 +216,186 @@ export default function Home() {
             Form. <br />
             Vision.
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
+
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.65rem",
-              letterSpacing: "0.25em",
+              width: "4rem",
+              height: "1px",
+              background: "#c9a84c",
+              marginBottom: "1.5rem",
+              transformOrigin: "left center",
+            }}
+          />
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.85 }}
+            style={{
+              fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
+              fontSize: "0.7rem",
+              letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "rgba(240,237,232,0.55)",
+              color: "rgba(240,237,232,0.75)",
             }}
             data-ocid="hero-sub"
           >
-            D2U STUDIO — Architecture &amp; Interior Design
+            Architecture &amp; Interior Design
           </motion.p>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.8 }}
-          style={{
-            position: "absolute",
-            bottom: "2.5rem",
-            right: "2.5rem",
-            zIndex: 3,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "0.75rem",
-          }}
-          aria-hidden="true"
-        >
-          <span
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.6rem",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "rgba(240,237,232,0.35)",
-              writingMode: "vertical-rl",
-            }}
-          >
-            Scroll
-          </span>
-          <div
-            style={{
-              width: "1px",
-              height: "4rem",
-              background: "rgba(240,237,232,0.2)",
-            }}
-          />
-        </motion.div>
+        {/* Scroll indicator removed */}
       </section>
 
       {/* ── SECTION 2: STUDIO STATEMENT ─────────────────────────────────── */}
       <section
         style={{
-          background: "#0a0a0a",
+          borderTop: "1px solid #3a3020",
+          position: "relative",
+          overflow: "hidden",
           padding: "clamp(5rem, 12vh, 9rem) clamp(1.5rem, 6vw, 6rem)",
         }}
         data-ocid="studio-statement"
       >
-        <SectionLabel>The Studio</SectionLabel>
-        <div
+        {/* Static BG image */}
+        <img
+          src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1920&q=80"
+          alt=""
+          aria-hidden="true"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "3rem",
-            alignItems: "end",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            willChange: "auto",
+            transform: "none",
           }}
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 36 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 300,
-              fontSize: "clamp(2.8rem, 6.5vw, 6.5rem)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.01em",
-              color: "#f0ede8",
-              maxWidth: "22ch",
-            }}
-            data-ocid="statement-heading"
-          >
-            We design spaces that
-            <br />
-            transcend the ordinary.
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            style={{ maxWidth: "38ch", marginLeft: "auto" }}
-          >
-            <p
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.9rem",
-                lineHeight: 1.85,
-                color: "rgba(240,237,232,0.55)",
-                textAlign: "right",
-              }}
-            >
-              D2U Studio is an architecture and interior design practice founded
-              on the belief that every space has the potential to elevate the
-              lives of those within it. Working across Kuwait and the Gulf, we
-              bring rigorous thinking and refined craft to each project — from
-              intimate residences to civic institutions.
-            </p>
-          </motion.div>
-        </div>
+          loading="lazy"
+        />
+        {/* Dark overlay */}
         <div
+          aria-hidden="true"
           style={{
-            marginTop: "5rem",
-            height: "1px",
-            background: "rgba(240,237,232,0.08)",
+            position: "absolute",
+            inset: 0,
+            background: "rgba(5,4,2,0.75)",
+            zIndex: 1,
           }}
         />
+        {/* Warm amber gradient tint over overlay */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(160deg, rgba(201,168,76,0.06) 0%, transparent 60%)",
+            zIndex: 1,
+          }}
+        />
+        {/* Giant decorative quotation mark */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "-1rem",
+            right: "clamp(1.5rem, 6vw, 6rem)",
+            fontFamily:
+              "var(--font-display), 'Palatino Linotype', Georgia, serif",
+            fontSize: "clamp(12rem, 25vw, 22rem)",
+            lineHeight: 1,
+            color: "rgba(201,168,76,0.05)",
+            fontWeight: 700,
+            userSelect: "none",
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        >
+          "
+        </div>
+        <div style={{ position: "relative", zIndex: 3 }}>
+          <SectionLabel>The Studio</SectionLabel>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "3rem",
+              alignItems: "end",
+            }}
+          >
+            <motion.h2
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontFamily:
+                  "var(--font-display), 'Palatino Linotype', Georgia, serif",
+                fontWeight: 300,
+                fontSize: "clamp(2.8rem, 6.5vw, 6.5rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#f0ede8",
+                maxWidth: "22ch",
+              }}
+              data-ocid="statement-heading"
+            >
+              We design spaces that
+              <br />
+              <em style={{ color: "#c9a84c", fontStyle: "italic" }}>
+                transcend
+              </em>{" "}
+              the ordinary.
+            </motion.h2>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              style={{ maxWidth: "38ch", marginLeft: "auto" }}
+            >
+              <p
+                style={{
+                  fontFamily:
+                    "var(--font-body), -apple-system, Arial, sans-serif",
+                  fontSize: "0.95rem",
+                  lineHeight: 1.85,
+                  color: "rgba(240,237,232,0.78)",
+                  textAlign: "right",
+                }}
+              >
+                D2U Studio is an architecture and interior design practice
+                founded on the belief that every space has the potential to
+                elevate the lives of those within it. Working across Kuwait and
+                the Gulf, we bring rigorous thinking and refined craft to each
+                project — from intimate residences to civic institutions.
+              </p>
+            </motion.div>
+          </div>
+          {/* Visible gold-tinted divider */}
+          <div
+            style={{
+              marginTop: "5rem",
+              height: "1px",
+              background:
+                "linear-gradient(to right, #c9a84c 0%, rgba(201,168,76,0.3) 40%, transparent 100%)",
+            }}
+          />
+        </div>
       </section>
 
       {/* ── SECTION 3: FEATURED PROJECTS ────────────────────────────────── */}
       <section
-        style={{ background: "#0a0a0a", padding: "clamp(4rem, 10vh, 7rem) 0" }}
+        style={{
+          background: "#0a0a0a",
+          padding: "clamp(4rem, 10vh, 7rem) 0",
+          borderTop: "1px solid #1a1a1a",
+        }}
         data-ocid="featured-projects"
       >
         <div
@@ -385,49 +407,35 @@ export default function Home() {
             alignItems: "flex-end",
           }}
         >
-          <div>
-            <SectionLabel>Selected Work</SectionLabel>
-          </div>
+          <SectionLabel>Selected Work</SectionLabel>
         </div>
 
         {/* Column headers */}
         <div
           style={{
             padding: "0 clamp(1.5rem, 6vw, 6rem)",
-            display: "grid",
-            gridTemplateColumns: "8rem 1fr",
-            gap: "2rem",
             marginBottom: "1rem",
           }}
         >
           <span
             style={{
-              fontFamily: "var(--font-body)",
+              fontFamily: "var(--font-body), Arial, sans-serif",
               fontSize: "0.6rem",
+              fontWeight: 600,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "rgba(240,237,232,0.3)",
-            }}
-          >
-            Index
-          </span>
-          <span
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.6rem",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "rgba(240,237,232,0.3)",
+              color: "rgba(240,237,232,0.45)",
             }}
           >
             Project
           </span>
         </div>
 
+        {/* Gold top rule */}
         <div
           style={{
             height: "1px",
-            background: "rgba(240,237,232,0.08)",
+            background: "rgba(201,168,76,0.35)",
             marginBottom: "0",
           }}
         />
@@ -438,7 +446,7 @@ export default function Home() {
                 key={id}
                 style={{
                   height: "200px",
-                  borderBottom: "1px solid rgba(240,237,232,0.08)",
+                  borderBottom: "1px solid #1e1e1e",
                   background: "rgba(240,237,232,0.02)",
                 }}
               />
@@ -452,8 +460,8 @@ export default function Home() {
             ))}
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           style={{
@@ -465,25 +473,28 @@ export default function Home() {
           <Link
             to="/projects"
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.75rem",
-              letterSpacing: "0.15em",
+              fontFamily: "var(--font-body), Arial, sans-serif",
+              fontSize: "0.72rem",
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: "#f0ede8",
-              border: "1px solid rgba(240,237,232,0.2)",
-              padding: "0.85rem 2rem",
+              border: "1px solid rgba(201,168,76,0.5)",
+              padding: "0.9rem 2.25rem",
               display: "inline-block",
               textDecoration: "none",
-              transition: "border-color 0.3s, color 0.3s",
+              transition: "border-color 0.3s, color 0.3s, background 0.3s",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#c9a84c";
-              (e.currentTarget as HTMLElement).style.color = "#c9a84c";
+              const el = e.currentTarget as HTMLElement;
+              el.style.borderColor = "#c9a84c";
+              el.style.color = "#0a0a0a";
+              el.style.background = "#c9a84c";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor =
-                "rgba(240,237,232,0.2)";
-              (e.currentTarget as HTMLElement).style.color = "#f0ede8";
+              const el = e.currentTarget as HTMLElement;
+              el.style.borderColor = "rgba(201,168,76,0.5)";
+              el.style.color = "#f0ede8";
+              el.style.background = "transparent";
             }}
             data-ocid="view-all-projects"
           >
@@ -495,57 +506,116 @@ export default function Home() {
       {/* ── SECTION 4: STATISTICS ───────────────────────────────────────── */}
       <section
         style={{
-          background: "#0a0a0a",
           padding: "clamp(5rem, 10vh, 8rem) clamp(1.5rem, 6vw, 6rem)",
-          borderTop: "1px solid rgba(240,237,232,0.08)",
-          borderBottom: "1px solid rgba(240,237,232,0.08)",
+          borderTop: "1px solid rgba(201,168,76,0.35)",
+          borderBottom: "1px solid rgba(201,168,76,0.35)",
+          position: "relative",
+          overflow: "hidden",
         }}
         data-ocid="stats-section"
       >
+        {/* Static BG image */}
+        <img
+          src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1920&q=80"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            willChange: "auto",
+            transform: "none",
+          }}
+          loading="lazy"
+        />
+        {/* Dark overlay */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(135deg, rgba(5,4,2,0.9) 0%, rgba(10,8,4,0.88) 50%, rgba(8,7,3,0.92) 100%)",
+            zIndex: 1,
+          }}
+        />
+        {/* Subtle large gold number background accent */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: "-2rem",
+            bottom: "5%",
+            fontFamily: "var(--font-display), Georgia, serif",
+            fontSize: "clamp(15rem, 28vw, 28rem)",
+            lineHeight: 1,
+            color: "rgba(201,168,76,0.04)",
+            fontWeight: 700,
+            userSelect: "none",
+            pointerEvents: "none",
+            letterSpacing: "-0.05em",
+            zIndex: 2,
+            transform: "none",
+            willChange: "auto",
+          }}
+        >
+          12
+        </div>
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: "3rem 2rem",
+            position: "relative",
+            zIndex: 3,
           }}
           className="md:!grid-cols-4"
         >
-          {STATS.map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               data-ocid={`stat-${i}`}
             >
               <p
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily:
+                    "var(--font-display), 'Palatino Linotype', Georgia, serif",
                   fontWeight: 300,
+                  fontStyle: "italic",
                   fontSize: "clamp(3.5rem, 6vw, 5.5rem)",
                   lineHeight: 1,
-                  color: "#f0ede8",
+                  color: "#c9a84c",
                   marginBottom: "0.75rem",
+                  textShadow: "0 0 40px rgba(201,168,76,0.15)",
                 }}
               >
                 <CountUp target={stat.value} suffix={stat.suffix} />
               </p>
+              {/* Gold accent line */}
               <div
                 style={{
-                  width: "2rem",
+                  width: "2.5rem",
                   height: "1px",
                   background: "#c9a84c",
                   marginBottom: "0.75rem",
+                  opacity: 0.6,
                 }}
               />
               <p
                 style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.62rem",
-                  letterSpacing: "0.2em",
+                  fontFamily: "var(--font-body), Arial, sans-serif",
+                  fontSize: "0.65rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.22em",
                   textTransform: "uppercase",
-                  color: "rgba(240,237,232,0.4)",
+                  color: "rgba(240,237,232,0.65)",
                 }}
               >
                 {stat.label}
@@ -558,65 +628,98 @@ export default function Home() {
       {/* ── SECTION 5: SERVICES ─────────────────────────────────────────── */}
       <section
         style={{
-          background: "#0a0a0a",
           padding: "clamp(5rem, 12vh, 9rem) clamp(1.5rem, 6vw, 6rem)",
+          position: "relative",
+          overflow: "hidden",
         }}
         data-ocid="services-section"
       >
-        <SectionLabel>Our Services</SectionLabel>
-        <div
+        {/* Static BG image */}
+        <img
+          src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=1920&q=80"
+          alt=""
+          aria-hidden="true"
           style={{
-            height: "1px",
-            background: "rgba(240,237,232,0.08)",
-            marginBottom: "0",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            willChange: "auto",
+            transform: "none",
+          }}
+          loading="lazy"
+        />
+        {/* Dark overlay */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(5,4,2,0.88)",
+            zIndex: 1,
           }}
         />
-        {SERVICES.map((svc, i) => (
-          <ServiceRow key={svc.num} svc={svc} index={i} />
-        ))}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          style={{ marginTop: "3.5rem" }}
-        >
-          <Link
-            to="/services"
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <SectionLabel>Our Services</SectionLabel>
+          {/* Gold rule */}
+          <div
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.75rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "#f0ede8",
-              border: "1px solid rgba(240,237,232,0.2)",
-              padding: "0.85rem 2rem",
-              display: "inline-block",
-              textDecoration: "none",
-              transition: "border-color 0.3s, color 0.3s",
+              height: "1px",
+              background: "rgba(201,168,76,0.35)",
+              marginBottom: "0",
             }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#c9a84c";
-              (e.currentTarget as HTMLElement).style.color = "#c9a84c";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor =
-                "rgba(240,237,232,0.2)";
-              (e.currentTarget as HTMLElement).style.color = "#f0ede8";
-            }}
-            data-ocid="explore-services-link"
+          />
+          {SERVICES.map((svc, i) => (
+            <ServiceRow key={svc.num} svc={svc} index={i} />
+          ))}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            style={{ marginTop: "3.5rem" }}
           >
-            Explore Services
-          </Link>
-        </motion.div>
+            <Link
+              to="/services"
+              style={{
+                fontFamily: "var(--font-body), Arial, sans-serif",
+                fontSize: "0.72rem",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#c9a84c",
+                border: "1px solid #c9a84c",
+                padding: "0.9rem 2.25rem",
+                display: "inline-block",
+                textDecoration: "none",
+                transition: "background 0.3s, color 0.3s",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "#c9a84c";
+                el.style.color = "#0a0a0a";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "transparent";
+                el.style.color = "#c9a84c";
+              }}
+              data-ocid="explore-services-link"
+            >
+              Explore Services
+            </Link>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── SECTION 6: FOUNDERS ─────────────────────────────────────────── */}
       <section
         style={{
-          background: "#0a0a0a",
+          background: "#0e0d0b",
           padding: "clamp(5rem, 12vh, 9rem) clamp(1.5rem, 6vw, 6rem)",
-          borderTop: "1px solid rgba(240,237,232,0.08)",
+          borderTop: "1px solid #2a2520",
+          borderBottom: "1px solid #2a2520",
         }}
         data-ocid="founders-section"
       >
@@ -632,7 +735,8 @@ export default function Home() {
         <div
           style={{
             height: "1px",
-            background: "rgba(240,237,232,0.08)",
+            background:
+              "linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent)",
             margin: "4rem 0",
           }}
         />
@@ -649,20 +753,77 @@ export default function Home() {
       {/* ── SECTION 7: INQUIRY CTA ──────────────────────────────────────── */}
       <section
         style={{
-          background: "#0a0a0a",
           padding: "clamp(6rem, 14vh, 11rem) clamp(1.5rem, 6vw, 6rem)",
-          borderTop: "1px solid rgba(240,237,232,0.08)",
           textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
+          borderTop: "1px solid rgba(201,168,76,0.2)",
         }}
         data-ocid="cta-section"
       >
+        {/* Static BG image */}
+        <img
+          src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=80"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            willChange: "auto",
+            transform: "none",
+          }}
+          loading="lazy"
+        />
+        {/* Dark overlay */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(5,4,2,0.82)",
+            zIndex: 1,
+          }}
+        />
+        {/* Strong radial gold glow */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201,168,76,0.1) 0%, rgba(201,168,76,0.04) 50%, transparent 75%)",
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
+        {/* Top gold accent line */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "calc(50% - 3rem)",
+            width: "6rem",
+            height: "1px",
+            background: "#c9a84c",
+            opacity: 0.7,
+            zIndex: 3,
+            transform: "none",
+            willChange: "auto",
+          }}
+        />
         <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily:
+              "var(--font-display), 'Palatino Linotype', Georgia, serif",
             fontWeight: 300,
             fontStyle: "italic",
             fontSize: "clamp(3rem, 7vw, 6.5rem)",
@@ -670,6 +831,8 @@ export default function Home() {
             letterSpacing: "-0.01em",
             color: "#f0ede8",
             marginBottom: "2rem",
+            position: "relative",
+            zIndex: 4,
           }}
           data-ocid="cta-heading"
         >
@@ -678,46 +841,55 @@ export default function Home() {
           Something.
         </motion.h2>
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
           style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "0.8rem",
-            letterSpacing: "0.12em",
+            fontFamily: "var(--font-body), Arial, sans-serif",
+            fontSize: "0.75rem",
+            fontWeight: 500,
+            letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: "rgba(240,237,232,0.4)",
+            color: "rgba(240,237,232,0.65)",
             marginBottom: "3rem",
+            position: "relative",
+            zIndex: 4,
           }}
         >
           Tell us about your project
         </motion.p>
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.35 }}
+          style={{ position: "relative", zIndex: 4 }}
         >
           <Link
             to="/contact"
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.75rem",
-              letterSpacing: "0.18em",
+              fontFamily: "var(--font-body), Arial, sans-serif",
+              fontSize: "0.72rem",
+              fontWeight: 600,
+              letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "#0a0a0a",
               background: "#c9a84c",
-              padding: "1rem 3rem",
+              padding: "1.1rem 3.5rem",
               display: "inline-block",
               textDecoration: "none",
-              transition: "background 0.3s, transform 0.3s",
+              transition: "background 0.3s, transform 0.2s",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#b8953f";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "#b8953f";
+              el.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#c9a84c";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "#c9a84c";
+              el.style.transform = "translateY(0)";
             }}
             data-ocid="cta-start-conversation"
           >
@@ -729,7 +901,7 @@ export default function Home() {
   );
 }
 
-// ── Project Row (editorial indexed format) ─────────────────────────────────
+// ── Project Row (editorial format — no index label) ───────────────────────
 function ProjectRow({ project, index }: { project: Project; index: number }) {
   const [hovered, setHovered] = useState(false);
   const fallback = "/assets/images/placeholder.svg";
@@ -737,12 +909,11 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
     project.imageUrls && project.imageUrls.length > 0
       ? project.imageUrls[0]
       : fallback;
-  const num = `P.${String(index + 1).padStart(2, "0")}`;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: index * 0.08 }}
       data-ocid={`project-row-${project.id}`}
@@ -756,111 +927,93 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           style={{
-            display: "grid",
-            gridTemplateColumns: "8rem 1fr",
-            gap: "2rem",
+            display: "flex",
             alignItems: "center",
             padding: "clamp(1.5rem, 3vh, 2.5rem) clamp(1.5rem, 6vw, 6rem)",
-            borderBottom: "1px solid rgba(240,237,232,0.08)",
+            borderBottom: "1px solid #232320",
             cursor: "pointer",
             transition: "background 0.3s",
-            background: hovered ? "rgba(240,237,232,0.02)" : "transparent",
+            background: hovered ? "rgba(201,168,76,0.04)" : "transparent",
+            gap: "2rem",
+            overflow: "hidden",
           }}
         >
-          {/* Index number */}
-          <span
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 300,
-              fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
-              color: hovered ? "#c9a84c" : "rgba(240,237,232,0.2)",
-              transition: "color 0.3s",
-              letterSpacing: "0.02em",
-            }}
-          >
-            {num}
-          </span>
-
-          {/* Project info + image */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "2rem",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "#c9a84c",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {CATEGORY_LABELS[project.category]}
-              </p>
-              <h3
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 300,
-                  fontSize: "clamp(1.3rem, 2.5vw, 1.9rem)",
-                  color: "#f0ede8",
-                  letterSpacing: "-0.01em",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {project.title}
-              </h3>
-              {project.scope && (
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.75rem",
-                    color: "rgba(240,237,232,0.35)",
-                    marginTop: "0.35rem",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {project.scope}
-                </p>
-              )}
-            </div>
-
-            {/* Thumbnail */}
-            <div
+          {/* Project info */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p
               style={{
-                flexShrink: 0,
-                width: "clamp(7rem, 14vw, 14rem)",
-                height: "clamp(4.5rem, 8vw, 9rem)",
-                overflow: "hidden",
-                opacity: hovered ? 1 : 0.6,
-                transition: "opacity 0.4s",
+                fontFamily: "var(--font-body), Arial, sans-serif",
+                fontSize: "0.6rem",
+                fontWeight: 600,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#c9a84c",
+                marginBottom: "0.5rem",
               }}
             >
-              <img
-                src={img}
-                alt={project.title}
+              {CATEGORY_LABELS[project.category]}
+            </p>
+            <h3
+              style={{
+                fontFamily:
+                  "var(--font-display), 'Palatino Linotype', Georgia, serif",
+                fontWeight: 300,
+                fontSize: "clamp(1.3rem, 2.5vw, 2rem)",
+                color: hovered ? "#f0ede8" : "#c8c4be",
+                letterSpacing: "-0.01em",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                transition: "color 0.3s",
+              }}
+            >
+              {project.title}
+            </h3>
+            {project.scope && (
+              <p
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  transform: hovered ? "scale(1.05)" : "scale(1)",
-                  transition: "transform 0.6s ease",
+                  fontFamily: "var(--font-body), Arial, sans-serif",
+                  fontSize: "0.75rem",
+                  color: "rgba(240,237,232,0.45)",
+                  marginTop: "0.35rem",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = fallback;
-                }}
-              />
-            </div>
+              >
+                {project.scope}
+              </p>
+            )}
+          </div>
+
+          {/* Thumbnail */}
+          <div
+            style={{
+              flexShrink: 0,
+              width: "clamp(7rem, 14vw, 14rem)",
+              height: "clamp(4.5rem, 8vw, 9rem)",
+              overflow: "hidden",
+              opacity: hovered ? 1 : 0.65,
+              transition: "opacity 0.4s",
+              border: hovered
+                ? "1px solid rgba(201,168,76,0.3)"
+                : "1px solid transparent",
+            }}
+          >
+            <img
+              src={img}
+              alt={project.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transform: hovered ? "scale(1.05)" : "scale(1)",
+                transition: "transform 0.6s ease",
+              }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = fallback;
+              }}
+            />
           </div>
         </div>
       </Link>
@@ -876,8 +1029,8 @@ function ServiceRow({
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.09 }}
       data-ocid={`service-row-${index}`}
@@ -890,18 +1043,22 @@ function ServiceRow({
           gridTemplateColumns: "4rem 1fr auto",
           gap: "2rem",
           alignItems: "center",
-          padding: "2rem 0",
-          borderBottom: "1px solid rgba(240,237,232,0.08)",
+          padding: "2.25rem 0",
+          borderBottom: "1px solid #232320",
+          borderLeft: hovered ? "2px solid #c9a84c" : "2px solid transparent",
+          paddingLeft: hovered ? "1.5rem" : "0",
           cursor: "default",
-          transition: "background 0.3s",
+          transition: "border-color 0.3s, padding-left 0.3s, background 0.3s",
+          background: hovered ? "rgba(201,168,76,0.02)" : "transparent",
         }}
       >
         <span
           style={{
-            fontFamily: "var(--font-body)",
+            fontFamily: "var(--font-body), Arial, sans-serif",
             fontSize: "0.65rem",
-            color: hovered ? "#c9a84c" : "rgba(240,237,232,0.25)",
-            letterSpacing: "0.1em",
+            fontWeight: 600,
+            color: hovered ? "#c9a84c" : "rgba(201,168,76,0.5)",
+            letterSpacing: "0.12em",
             transition: "color 0.3s",
           }}
         >
@@ -910,33 +1067,39 @@ function ServiceRow({
         <div>
           <h3
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily:
+                "var(--font-display), 'Palatino Linotype', Georgia, serif",
               fontWeight: 300,
               fontSize: "clamp(1.4rem, 2.8vw, 2.2rem)",
-              color: "#f0ede8",
+              color: hovered ? "#f0ede8" : "#d8d4ce",
               letterSpacing: "-0.01em",
-              marginBottom: "0.35rem",
+              marginBottom: "0.4rem",
+              transition: "color 0.3s",
             }}
           >
             {svc.title}
           </h3>
           <p
             style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "0.8rem",
-              color: "rgba(240,237,232,0.4)",
+              fontFamily: "var(--font-body), Arial, sans-serif",
+              fontSize: "0.82rem",
+              color: hovered
+                ? "rgba(240,237,232,0.65)"
+                : "rgba(240,237,232,0.45)",
               lineHeight: 1.65,
+              transition: "color 0.3s",
             }}
           >
             {svc.desc}
           </p>
         </div>
+        {/* Animated right indicator */}
         <div
           style={{
-            width: "2rem",
+            width: hovered ? "3rem" : "1.5rem",
             height: "1px",
-            background: hovered ? "#c9a84c" : "rgba(240,237,232,0.15)",
-            transition: "background 0.3s, width 0.3s",
+            background: hovered ? "#c9a84c" : "rgba(240,237,232,0.2)",
+            transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
             flexShrink: 0,
           }}
         />
@@ -963,8 +1126,8 @@ function FounderRow({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.75, delay: index * 0.15 }}
       style={{
@@ -976,13 +1139,14 @@ function FounderRow({
       className="md:!grid-cols-[2fr_3fr]"
       data-ocid={`founder-${name.toLowerCase()}`}
     >
-      {/* Image — smaller 40% column */}
+      {/* Portrait */}
       <div
         style={{
           position: "relative",
           overflow: "hidden",
           aspectRatio: "3/4",
           maxWidth: "340px",
+          border: "1px solid rgba(201,168,76,0.15)",
         }}
       >
         <img
@@ -995,8 +1159,27 @@ function FounderRow({
             display: "block",
           }}
           onError={(e) => {
-            (e.target as HTMLImageElement).style.background =
-              "rgba(201,168,76,0.08)";
+            const el = e.target as HTMLImageElement;
+            el.style.display = "none";
+            const parent = el.parentElement;
+            if (parent) {
+              parent.style.background =
+                "linear-gradient(135deg, #141414 0%, #1c1a14 100%)";
+              parent.style.display = "flex";
+              parent.style.alignItems = "flex-end";
+              parent.style.justifyContent = "flex-start";
+              parent.style.padding = "1.5rem";
+              const monogram = document.createElement("span");
+              monogram.textContent = name[0];
+              monogram.style.cssText = `
+                font-family: 'Cormorant Garamond', Georgia, serif;
+                font-size: 5rem;
+                font-weight: 300;
+                color: rgba(201,168,76,0.3);
+                line-height: 1;
+              `;
+              parent.appendChild(monogram);
+            }
           }}
         />
         <div
@@ -1004,8 +1187,29 @@ function FounderRow({
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(to top, rgba(10,10,10,0.4) 0%, transparent 50%)",
+              "linear-gradient(to top, rgba(10,10,10,0.5) 0%, transparent 50%)",
             pointerEvents: "none",
+          }}
+        />
+        {/* Gold corner accent */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "2rem",
+            height: "1px",
+            background: "#c9a84c",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "1px",
+            height: "2rem",
+            background: "#c9a84c",
           }}
         />
       </div>
@@ -1014,9 +1218,10 @@ function FounderRow({
       <div style={{ paddingTop: "1rem" }}>
         <p
           style={{
-            fontFamily: "var(--font-body)",
+            fontFamily: "var(--font-body), Arial, sans-serif",
             fontSize: "0.6rem",
-            letterSpacing: "0.2em",
+            fontWeight: 600,
+            letterSpacing: "0.25em",
             textTransform: "uppercase",
             color: "#c9a84c",
             marginBottom: "1rem",
@@ -1026,7 +1231,8 @@ function FounderRow({
         </p>
         <h3
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily:
+              "var(--font-display), 'Palatino Linotype', Georgia, serif",
             fontWeight: 300,
             fontSize: "clamp(2rem, 4vw, 3.5rem)",
             color: "#f0ede8",
@@ -1039,10 +1245,10 @@ function FounderRow({
         </h3>
         <p
           style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "0.875rem",
+            fontFamily: "var(--font-body), -apple-system, Arial, sans-serif",
+            fontSize: "0.9rem",
             lineHeight: 1.85,
-            color: "rgba(240,237,232,0.55)",
+            color: "rgba(240,237,232,0.65)",
             marginBottom: "2rem",
             maxWidth: "50ch",
           }}
@@ -1050,15 +1256,16 @@ function FounderRow({
           {bio}
         </p>
         <blockquote
-          style={{ borderLeft: "1px solid #c9a84c", paddingLeft: "1.25rem" }}
+          style={{ borderLeft: "2px solid #c9a84c", paddingLeft: "1.5rem" }}
         >
           <p
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily:
+                "var(--font-display), 'Palatino Linotype', Georgia, serif",
               fontStyle: "italic",
               fontWeight: 300,
-              fontSize: "1.1rem",
-              color: "rgba(240,237,232,0.5)",
+              fontSize: "1.15rem",
+              color: "rgba(240,237,232,0.65)",
               lineHeight: 1.6,
             }}
           >

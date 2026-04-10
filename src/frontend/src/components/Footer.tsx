@@ -15,12 +15,12 @@ export function Footer() {
     <footer
       data-ocid="site-footer"
       className="w-full"
-      style={{ backgroundColor: "#0a0a0a" }}
+      style={{ backgroundColor: "#0c0c0a" }}
     >
-      {/* Gold top divider */}
+      {/* Gold top divider — full opacity, visible */}
       <div
         className="w-full h-px"
-        style={{ backgroundColor: "#c9a84c", opacity: 0.4 }}
+        style={{ backgroundColor: "#c9a84c", opacity: 0.6 }}
       />
 
       <div className="px-6 md:px-12 py-16 md:py-20">

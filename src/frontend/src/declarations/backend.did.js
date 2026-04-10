@@ -54,6 +54,7 @@ export const Inquiry = IDL.Record({
   'timestamp' : Timestamp,
   'phone' : IDL.Text,
 });
+export const Stat = IDL.Record({ 'title' : IDL.Text, 'value' : IDL.Text });
 
 export const idlService = IDL.Service({
   'addHeroImage' : IDL.Func([IDL.Text], [IDL.Nat], []),
@@ -72,6 +73,7 @@ export const idlService = IDL.Service({
   'getHeroImages' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'getInquiry' : IDL.Func([InquiryId], [IDL.Opt(Inquiry)], ['query']),
   'getProject' : IDL.Func([ProjectId], [IDL.Opt(Project)], ['query']),
+  'getStats' : IDL.Func([], [IDL.Vec(Stat)], ['query']),
   'listInquiries' : IDL.Func([], [IDL.Vec(Inquiry)], ['query']),
   'listProjects' : IDL.Func(
       [IDL.Opt(ProjectCategory)],
@@ -99,6 +101,7 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
     ),
+  'updateStats' : IDL.Func([IDL.Vec(Stat)], [], []),
   'validateAdminCredentials' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
 });
 
@@ -151,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : Timestamp,
     'phone' : IDL.Text,
   });
+  const Stat = IDL.Record({ 'title' : IDL.Text, 'value' : IDL.Text });
   
   return IDL.Service({
     'addHeroImage' : IDL.Func([IDL.Text], [IDL.Nat], []),
@@ -169,6 +173,7 @@ export const idlFactory = ({ IDL }) => {
     'getHeroImages' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'getInquiry' : IDL.Func([InquiryId], [IDL.Opt(Inquiry)], ['query']),
     'getProject' : IDL.Func([ProjectId], [IDL.Opt(Project)], ['query']),
+    'getStats' : IDL.Func([], [IDL.Vec(Stat)], ['query']),
     'listInquiries' : IDL.Func([], [IDL.Vec(Inquiry)], ['query']),
     'listProjects' : IDL.Func(
         [IDL.Opt(ProjectCategory)],
@@ -196,6 +201,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
       ),
+    'updateStats' : IDL.Func([IDL.Vec(Stat)], [], []),
     'validateAdminCredentials' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
   });
 };

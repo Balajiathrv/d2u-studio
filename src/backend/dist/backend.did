@@ -1,4 +1,9 @@
 type Timestamp = int;
+type Stat = 
+ record {
+   title: text;
+   value: text;
+ };
 type ServiceType = 
  variant {
    Architectural;
@@ -65,6 +70,7 @@ service : {
   getHeroImages: () -> (vec text) query;
   getInquiry: (id: InquiryId) -> (opt Inquiry) query;
   getProject: (id: ProjectId) -> (opt Project) query;
+  getStats: () -> (vec Stat) query;
   listInquiries: () -> (vec Inquiry) query;
   listProjects: (category: opt ProjectCategory) -> (vec Project) query;
   removeHeroImage: (index: nat) -> (variant {
@@ -84,5 +90,6 @@ service : {
       err: text;
       ok;
     });
+  updateStats: (newStats: vec Stat) -> ();
   validateAdminCredentials: (username: text, password: text) -> (bool);
 }

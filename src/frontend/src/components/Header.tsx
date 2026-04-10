@@ -9,19 +9,42 @@ const NAV_LINKS = [
 ];
 
 function D2UWordmark({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const displaySizes = { sm: "text-xl", md: "text-2xl", lg: "text-4xl" };
-  const studioSizes = { sm: "text-[9px]", md: "text-[10px]", lg: "text-xs" };
+  const d2uSizes = { sm: "1.25rem", md: "1.5rem", lg: "2.25rem" };
+  const studioSizes = { sm: "0.55rem", md: "0.6rem", lg: "0.72rem" };
   return (
-    <span className="inline-flex items-baseline gap-2 select-none">
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "baseline",
+        gap: "0.6rem",
+        userSelect: "none",
+      }}
+    >
       <span
-        className={`font-display font-bold italic ${displaySizes[size]} tracking-tight`}
-        style={{ color: "#f0ede8" }}
+        style={{
+          fontFamily:
+            "var(--font-display), 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif",
+          fontWeight: 700,
+          fontStyle: "italic",
+          fontSize: d2uSizes[size],
+          letterSpacing: "-0.02em",
+          color: "#f0ede8",
+          lineHeight: 1,
+        }}
       >
         D2U
       </span>
       <span
-        className={`font-body ${studioSizes[size]} uppercase tracking-[0.35em] font-light`}
-        style={{ color: "#c9a84c", letterSpacing: "0.35em" }}
+        style={{
+          fontFamily:
+            "var(--font-body), -apple-system, BlinkMacSystemFont, Arial, sans-serif",
+          fontSize: studioSizes[size],
+          fontWeight: 600,
+          letterSpacing: "0.38em",
+          textTransform: "uppercase",
+          color: "#c9a84c",
+          lineHeight: 1,
+        }}
       >
         STUDIO
       </span>
@@ -60,11 +83,11 @@ export function Header() {
       <header
         data-ocid="site-header"
         className="sticky top-0 z-50 w-full"
-        style={{ backgroundColor: "#0a0a0a" }}
+        style={{ backgroundColor: "#0c0c0a" }}
       >
         <div
           className="flex items-center justify-between h-16 px-6 md:px-12"
-          style={{ borderBottom: "1px solid #1e1e1e" }}
+          style={{ borderBottom: "1px solid rgba(201,168,76,0.2)" }}
         >
           {/* Logo */}
           <Link to="/" data-ocid="nav-logo" className="group">
@@ -85,7 +108,12 @@ export function Header() {
                   color:
                     location.pathname === link.to
                       ? "#c9a84c"
-                      : "rgba(240,237,232,0.65)",
+                      : "rgba(240,237,232,0.7)",
+                  fontFamily:
+                    "var(--font-body), -apple-system, Arial, sans-serif",
+                  fontSize: "0.68rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.18em",
                 }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.color = "#c9a84c";
@@ -166,7 +194,7 @@ export function Header() {
       <div
         className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center transition-all duration-500"
         style={{
-          backgroundColor: "#0a0a0a",
+          backgroundColor: "#080806",
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
           transform: menuOpen ? "translateY(0)" : "translateY(-8px)",

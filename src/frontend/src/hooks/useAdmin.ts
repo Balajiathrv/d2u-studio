@@ -41,18 +41,6 @@ export function useChangeAdminCredentials() {
   });
 }
 
-export function useHeroImages() {
-  const { actor, isFetching } = useActor(createActor);
-  return useQuery<string[]>({
-    queryKey: ["heroImages"],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getHeroImages();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
 export function useAddHeroImage() {
   const { actor } = useActor(createActor);
   const queryClient = useQueryClient();

@@ -13,7 +13,7 @@ export function Layout({ children }: LayoutProps) {
       style={{ backgroundColor: "#0a0a0a" }}
     >
       <Header />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </div>
   );

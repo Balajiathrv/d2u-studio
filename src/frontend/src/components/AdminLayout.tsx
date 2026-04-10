@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  BarChart3,
   FolderOpen,
   Image,
   LayoutDashboard,
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { label: "Hero Images", href: "/admin/hero", icon: Image },
   { label: "Projects", href: "/admin/projects", icon: FolderOpen },
   { label: "Inquiries", href: "/admin/inquiries", icon: Mail },
+  { label: "Homepage Stats", href: "/admin/stats", icon: BarChart3 },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ] as const;
 

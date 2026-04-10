@@ -6,4 +6,9 @@ module {
   public type Counter = {
     var value : Nat;
   };
+
+  public type Stat = {
+    title : Text;
+    value : Text;
+  };
 };

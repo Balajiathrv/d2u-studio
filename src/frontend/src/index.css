@@ -1,46 +1,45 @@
+/* ── Google Fonts import as CSS backup (works even when <link> is blocked) ── */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --font-display: "Cormorant Garamond";
-    --font-body: "DM Sans";
-    --font-mono: monospace;
+    /* Font stacks with system fallbacks — renders even if web fonts are blocked */
+    --font-display: "Cormorant Garamond", "Palatino Linotype", "Book Antiqua",
+      Palatino, Georgia, "Times New Roman", serif;
+    --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
     --radius: 0rem;
 
-    /* Light mode — keep tokens valid but app always uses dark */
+    /* Light mode tokens (app always uses dark, but valid for completeness) */
     --background: 0.96 0.005 75;
     --foreground: 0.12 0.01 50;
     --card: 0.98 0.005 75;
     --card-foreground: 0.12 0.01 50;
     --popover: 0.98 0.005 75;
     --popover-foreground: 0.12 0.01 50;
-
     --primary: 0.65 0.1 88;
     --primary-foreground: 0.06 0.005 75;
-
     --secondary: 0.92 0.01 75;
     --secondary-foreground: 0.2 0.01 50;
     --muted: 0.92 0.01 75;
     --muted-foreground: 0.5 0.01 50;
-
     --accent: 0.65 0.1 88;
     --accent-foreground: 0.06 0.005 75;
-
     --destructive: 0.5 0.2 25;
     --destructive-foreground: 0.96 0.01 25;
-
     --border: 0.88 0.01 75;
     --input: 0.88 0.01 75;
     --ring: 0.65 0.1 88;
-
     --chart-1: 0.65 0.1 88;
     --chart-2: 0.6 0.08 160;
     --chart-3: 0.75 0.12 85;
     --chart-4: 0.65 0.1 140;
     --chart-5: 0.6 0.1 50;
-
     --sidebar: 0.98 0.005 75;
     --sidebar-foreground: 0.12 0.01 50;
     --sidebar-primary: 0.65 0.1 88;
@@ -51,22 +50,22 @@
     --sidebar-ring: 0.65 0.1 88;
   }
 
-  /* Dark — pure editorial black, gold accent, warm off-white text */
+  /* ── Dark — editorial black, gold accent, warm off-white text ── */
   .dark {
     --background: 0.07 0.005 75;
     --foreground: 0.93 0.01 75;
-    --card: 0.09 0.005 75;
+    --card: 0.1 0.005 75;
     --card-foreground: 0.93 0.01 75;
-    --popover: 0.1 0.005 75;
+    --popover: 0.11 0.005 75;
     --popover-foreground: 0.93 0.01 75;
 
-    /* Gold/champagne primary — #c9a84c ≈ oklch(0.69 0.1 80) */
+    /* Gold/champagne primary — #c9a84c */
     --primary: 0.69 0.1 80;
     --primary-foreground: 0.07 0.005 75;
 
-    --secondary: 0.13 0.005 75;
+    --secondary: 0.14 0.005 75;
     --secondary-foreground: 0.85 0.01 75;
-    --muted: 0.13 0.005 75;
+    --muted: 0.14 0.005 75;
     --muted-foreground: 0.55 0.01 75;
 
     --accent: 0.69 0.1 80;
@@ -75,8 +74,8 @@
     --destructive: 0.55 0.2 25;
     --destructive-foreground: 0.96 0.01 25;
 
-    --border: 0.14 0.005 75;
-    --input: 0.14 0.005 75;
+    --border: 0.18 0.005 75;
+    --input: 0.18 0.005 75;
     --ring: 0.69 0.1 80;
 
     --chart-1: 0.69 0.1 80;
@@ -85,90 +84,106 @@
     --chart-4: 0.65 0.1 140;
     --chart-5: 0.62 0.1 50;
 
-    --sidebar: 0.09 0.005 75;
+    --sidebar: 0.1 0.005 75;
     --sidebar-foreground: 0.93 0.01 75;
     --sidebar-primary: 0.69 0.1 80;
     --sidebar-primary-foreground: 0.07 0.005 75;
-    --sidebar-accent: 0.13 0.005 75;
+    --sidebar-accent: 0.14 0.005 75;
     --sidebar-accent-foreground: 0.85 0.01 75;
-    --sidebar-border: 0.14 0.005 75;
+    --sidebar-border: 0.18 0.005 75;
     --sidebar-ring: 0.69 0.1 80;
   }
 
   * {
     @apply border-border;
   }
+
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
   }
+
   body {
+    /* Explicit hex fallbacks — display even if OKLCH isn't supported */
     background-color: #0a0a0a;
     color: #f0ede8;
-    font-family: var(--font-body), "DM Sans", sans-serif;
+    font-family: var(--font-body), "DM Sans", -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
-  /* Transitions */
+  /* ── Font families (system fallbacks for firewall-blocked Google Fonts) ── */
+  .font-display {
+    font-family: var(--font-display), "Palatino Linotype", "Book Antiqua",
+      Palatino, Georgia, serif !important;
+  }
+  .font-body {
+    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Arial, sans-serif !important;
+  }
+
+  /* ── Transitions ── */
   .transition-smooth {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Typography scale */
+  /* ── Typography scale ── */
   .text-hero {
-    font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+    font-family: var(--font-display), "Palatino Linotype", Georgia, serif;
     font-weight: 700;
     font-style: italic;
     font-size: clamp(3.5rem, 10vw, 8rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
+    color: #f0ede8;
   }
 
   .text-section-heading {
-    font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+    font-family: var(--font-display), "Palatino Linotype", Georgia, serif;
     font-weight: 700;
     font-size: clamp(2.5rem, 6vw, 5rem);
     line-height: 1;
     letter-spacing: -0.01em;
+    color: #f0ede8;
   }
 
-  /* Gold label */
+  /* ── Gold label — highly visible ── */
   .text-label {
-    font-family: var(--font-body), "DM Sans", sans-serif;
+    font-family: var(--font-body), -apple-system, Arial, sans-serif;
     font-size: 0.6875rem;
-    font-weight: 400;
-    letter-spacing: 0.3em;
+    font-weight: 600;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: #c9a84c;
   }
 
-  /* Project index numbers */
+  /* ── Project index numbers ── */
   .project-index {
-    font-family: var(--font-body), "DM Sans", sans-serif;
+    font-family: var(--font-body), Arial, sans-serif;
     font-size: 0.75rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.2em;
-    color: rgba(201, 168, 76, 0.7);
+    color: #c9a84c;
   }
 
-  /* Thin rule dividers */
+  /* ── Dividers — more visible ── */
   .divider-line {
     height: 1px;
-    background-color: #1e1e1e;
+    background-color: #2a2a2a;
     width: 100%;
   }
 
   .divider-gold {
     height: 1px;
     background-color: #c9a84c;
-    opacity: 0.35;
+    opacity: 0.6;
     width: 100%;
   }
 
-  /* Card editorial */
+  /* ── Card editorial ── */
   .card-editorial {
     background: transparent;
     border: none;
@@ -177,12 +192,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Shadows */
-  .shadow-editorial {
-    box-shadow: none;
-  }
-
-  /* Section spacing */
+  /* ── Section spacing ── */
   .section-padding {
     padding-top: 6rem;
     padding-bottom: 6rem;
@@ -194,7 +204,7 @@
     }
   }
 
-  /* Entrance animations */
+  /* ── Entrance animations — only opacity+transform for a11y ── */
   .fade-in-up {
     animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -225,13 +235,14 @@
     }
   }
 
-  /* Gold shimmer on headings */
+  /* ── Gold shimmer on headings ── */
   .text-shimmer {
     background: linear-gradient(
       90deg,
       #f0ede8 0%,
       #c9a84c 40%,
-      #f0ede8 60%,
+      #e8d89a 55%,
+      #f0ede8 75%,
       #f0ede8 100%
     );
     background-size: 200% auto;
@@ -250,11 +261,94 @@
     }
   }
 
-  /* Hover lift */
+  /* ── Hover lift ── */
   .hover-lift {
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .hover-lift:hover {
     transform: translateY(-4px);
+  }
+
+  /* ── Gold line decorative accent ── */
+  .gold-line {
+    display: block;
+    width: 3rem;
+    height: 1px;
+    background-color: #c9a84c;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── NUCLEAR: Static background images — absolutely no movement ── */
+  /* Prevents ALL transforms, GPU compositing, and attachment tricks on bg images */
+  * {
+    background-attachment: scroll !important;
+  }
+
+  /* Section containers must NEVER get transforms — Framer Motion or otherwise */
+  section,
+  [data-section],
+  [data-ocid="hero-section"],
+  [data-ocid="studio-statement"],
+  [data-ocid="stats-section"],
+  [data-ocid="services-section"],
+  [data-ocid="cta-section"],
+  [data-ocid="founders-section"],
+  [data-ocid="featured-projects"] {
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  /* All background images must be perfectly static — no GPU layer, no transform */
+  section > img,
+  section img[aria-hidden="true"],
+  .hero-image,
+  .bg-image,
+  [data-bg-image],
+  [aria-hidden="true"][style*="position: absolute"] img,
+  img[aria-hidden="true"],
+  img[style*="position: absolute"],
+  img[style*="position:absolute"] {
+    transform: none !important;
+    will-change: auto !important;
+    transition: none !important;
+    animation: none !important;
+    background-attachment: scroll !important;
+    backface-visibility: visible !important;
+    perspective: none !important;
+  }
+
+  /* Prevent GPU layer promotion on decorative absolute-positioned elements */
+  section > div[aria-hidden="true"],
+  section > [aria-hidden="true"] {
+    transform: none !important;
+    will-change: auto !important;
+    backface-visibility: visible !important;
+  }
+
+  /* Reduced motion — honor user preference ── */
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up,
+    .fade-in {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .text-shimmer {
+      animation: none;
+      background: none;
+      -webkit-text-fill-color: #f0ede8;
+      color: #f0ede8;
+    }
+  }
+
+  /* ── Animation visibility failsafe ── */
+  /* If IntersectionObserver hasn't fired after 2s, reveal content */
+  .motion-safe-reveal {
+    animation: motionReveal 0.01s linear 2s forwards;
+  }
+  @keyframes motionReveal {
+    to {
+      opacity: 1;
+    }
   }
 }

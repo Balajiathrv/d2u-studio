@@ -29,6 +29,7 @@ type Project__614212307 =
   };
 type ServiceType__884622535 =
   {#Architectural; #Consultation; #Interior; #Renovation; #SpacePlanning};
+type Stat__270983384 = {title : Text; value : Text};
 type Timestamp__301639476 = Int;
 actor {
   stable adminCredentials : {var passwordHash : Blob; var username : Text};
@@ -50,6 +51,12 @@ actor {
     {
       var blockIndex : Nat__490723111;
       var blocks : [var [var ?Project__614212307]];
+      var elementIndex : Nat__490723111
+    };
+  stable stats :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Stat__270983384]];
       var elementIndex : Nat__490723111
     }
 };

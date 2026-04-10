@@ -1,10 +1,16 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, FolderOpen, ImageIcon, Mail } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  FolderOpen,
+  ImageIcon,
+  Mail,
+} from "lucide-react";
 import { AdminLayout } from "../../components/AdminLayout";
-import { useAdminProjects } from "../../hooks/useAdmin";
-import { useAdminInquiries } from "../../hooks/useAdmin";
-import { useHeroImages } from "../../hooks/useAdmin";
+import { useAdminInquiries, useAdminProjects } from "../../hooks/useAdmin";
+import { useHeroImages } from "../../hooks/useHeroImages";
+import { getStats } from "../../hooks/useStats";
 
 function StatCard({
   label,
@@ -46,6 +52,7 @@ export default function AdminDashboard() {
   const { data: projects, isLoading: loadingProjects } = useAdminProjects();
   const { data: inquiries, isLoading: loadingInquiries } = useAdminInquiries();
   const { data: heroImages, isLoading: loadingHero } = useHeroImages();
+  const stats = getStats();
 
   return (
     <AdminLayout title="Dashboard">
@@ -56,7 +63,7 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {loadingHero ? (
             <Skeleton className="h-24 rounded-xl" />
           ) : (
@@ -87,6 +94,12 @@ export default function AdminDashboard() {
               href="/admin/inquiries"
             />
           )}
+          <StatCard
+            label="Homepage Stats"
+            value={`${stats.length} items`}
+            icon={BarChart3}
+            href="/admin/stats"
+          />
         </div>
 
         {/* Recent inquiries */}

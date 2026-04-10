@@ -5,11 +5,8 @@ import { ExternalLink, ImageIcon, Plus, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { AdminLayout } from "../../components/AdminLayout";
-import {
-  useAddHeroImage,
-  useHeroImages,
-  useRemoveHeroImage,
-} from "../../hooks/useAdmin";
+import { useAddHeroImage, useRemoveHeroImage } from "../../hooks/useAdmin";
+import { useHeroImages } from "../../hooks/useHeroImages";
 
 export default function AdminHeroImages() {
   const { data: images, isLoading } = useHeroImages();

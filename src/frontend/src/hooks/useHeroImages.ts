@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { createActor } from "../backend";
 
 const DEFAULT_HERO_IMAGES = [
-  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1400&q=80",
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400&q=80",
-  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1400&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80",
+  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&q=80",
+  "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80",
 ];
 
 export function useHeroImages() {

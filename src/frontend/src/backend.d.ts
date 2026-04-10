@@ -40,6 +40,10 @@ export interface Inquiry {
     timestamp: Timestamp;
     phone: string;
 }
+export interface Stat {
+    title: string;
+    value: string;
+}
 export enum ProjectCategory {
     Interior = "Interior",
     Architectural = "Architectural",
@@ -74,6 +78,7 @@ export interface backendInterface {
     getHeroImages(): Promise<Array<string>>;
     getInquiry(id: InquiryId): Promise<Inquiry | null>;
     getProject(id: ProjectId): Promise<Project | null>;
+    getStats(): Promise<Array<Stat>>;
     listInquiries(): Promise<Array<Inquiry>>;
     listProjects(category: ProjectCategory | null): Promise<Array<Project>>;
     removeHeroImage(index: bigint): Promise<{
@@ -99,5 +104,6 @@ export interface backendInterface {
         __kind__: "err";
         err: string;
     }>;
+    updateStats(newStats: Array<Stat>): Promise<void>;
     validateAdminCredentials(username: string, password: string): Promise<boolean>;
 }

@@ -51,6 +51,7 @@ export type ServiceType = { 'Interior' : null } |
   { 'SpacePlanning' : null } |
   { 'Consultation' : null } |
   { 'Renovation' : null };
+export interface Stat { 'title' : string, 'value' : string }
 export type Timestamp = bigint;
 export interface _SERVICE {
   'addHeroImage' : ActorMethod<[string], bigint>,
@@ -69,6 +70,7 @@ export interface _SERVICE {
   'getHeroImages' : ActorMethod<[], Array<string>>,
   'getInquiry' : ActorMethod<[InquiryId], [] | [Inquiry]>,
   'getProject' : ActorMethod<[ProjectId], [] | [Project]>,
+  'getStats' : ActorMethod<[], Array<Stat>>,
   'listInquiries' : ActorMethod<[], Array<Inquiry>>,
   'listProjects' : ActorMethod<[[] | [ProjectCategory]], Array<Project>>,
   'removeHeroImage' : ActorMethod<
@@ -91,6 +93,7 @@ export interface _SERVICE {
     { 'ok' : null } |
       { 'err' : string }
   >,
+  'updateStats' : ActorMethod<[Array<Stat>], undefined>,
   'validateAdminCredentials' : ActorMethod<[string, string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
