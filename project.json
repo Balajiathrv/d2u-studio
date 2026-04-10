@@ -1,0 +1,26 @@
+{
+  "overview": "D2U Studio is a premium architecture and interior design studio website for Wahid and Jasim. Features an editorial dark theme inspired by archcraft-studio.vercel.app with bold serif headings, numbered project listings (P.01 format), full-bleed photography, and an admin panel for full content management.",
+  "features": [
+    "Animated splash screen with D2U wordmark",
+    "Hero slideshow with full-bleed images (4s autoplay)",
+    "Numbered project gallery P.01 format with category filters",
+    "Editorial dark theme — pure black, Cormorant Garamond, gold accents",
+    "Scroll-triggered animations and parallax effects",
+    "About page with animated expertise/skill bars",
+    "Services section with minimal editorial layout",
+    "Inquiry and contact form",
+    "Admin panel: manage hero images, projects, founders, settings",
+    "Mobile-responsive with hamburger navigation"
+  ],
+  "category": "portfolio",
+  "tags": [
+    "architecture",
+    "interior-design",
+    "portfolio",
+    "dark-theme",
+    "editorial",
+    "admin-panel",
+    "d2u-studio"
+  ],
+  "last_updated": "2026-04-10T07:30:49.593Z"
+}

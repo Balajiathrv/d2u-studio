@@ -1,0 +1,88 @@
+type Timestamp = int;
+type ServiceType = 
+ variant {
+   Architectural;
+   Consultation;
+   Interior;
+   Renovation;
+   SpacePlanning;
+ };
+type ProjectInput = 
+ record {
+   category: ProjectCategory;
+   description: text;
+   featured: bool;
+   imageUrls: vec text;
+   materials: vec text;
+   outcomes: text;
+   scope: text;
+   title: text;
+ };
+type ProjectId = nat;
+type ProjectCategory = 
+ variant {
+   Architectural;
+   Interior;
+   Renovation;
+   SpacePlanning;
+ };
+type Project = 
+ record {
+   category: ProjectCategory;
+   description: text;
+   featured: bool;
+   id: ProjectId;
+   imageUrls: vec text;
+   materials: vec text;
+   outcomes: text;
+   scope: text;
+   title: text;
+ };
+type InquiryId = nat;
+type Inquiry = 
+ record {
+   email: text;
+   id: InquiryId;
+   name: text;
+   phone: text;
+   projectDescription: text;
+   serviceType: ServiceType;
+   timestamp: Timestamp;
+ };
+service : {
+  addHeroImage: (url: text) -> (nat);
+  changeAdminCredentials: (currentPassword: text, newUsername: text,
+   newPassword: text) -> (variant {
+                            err: text;
+                            ok;
+                          });
+  createProject: (data: ProjectInput) -> (ProjectId);
+  deleteProject: (id: ProjectId) -> (variant {
+                                       err: text;
+                                       ok;
+                                     });
+  getFeaturedProjects: () -> (vec Project) query;
+  getHeroImages: () -> (vec text) query;
+  getInquiry: (id: InquiryId) -> (opt Inquiry) query;
+  getProject: (id: ProjectId) -> (opt Project) query;
+  listInquiries: () -> (vec Inquiry) query;
+  listProjects: (category: opt ProjectCategory) -> (vec Project) query;
+  removeHeroImage: (index: nat) -> (variant {
+                                      err: text;
+                                      ok;
+                                    });
+  reorderHeroImages: (newOrder: vec text) -> ();
+  setProjectFeatured: (id: ProjectId, featured: bool) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  submitInquiry: (name: text, email: text, phone: text, projectDescription:
+   text, serviceType: ServiceType) -> (Inquiry);
+  updateProject: (id: ProjectId, data: ProjectInput) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  validateAdminCredentials: (username: text, password: text) -> (bool);
+}

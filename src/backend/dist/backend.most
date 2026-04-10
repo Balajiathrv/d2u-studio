@@ -1,0 +1,55 @@
+// Version: 1.0.0
+type InquiryId__340326671 = Nat;
+type Inquiry__159127206 =
+  {
+    email : Text;
+    id : InquiryId__340326671;
+    name : Text;
+    phone : Text;
+    projectDescription : Text;
+    serviceType : ServiceType__884622535;
+    timestamp : Timestamp__301639476
+  };
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type ProjectCategory__669965722 =
+  {#Architectural; #Interior; #Renovation; #SpacePlanning};
+type ProjectId__478417951 = Nat;
+type Project__614212307 =
+  {
+    category : ProjectCategory__669965722;
+    description : Text;
+    featured : Bool;
+    id : ProjectId__478417951;
+    imageUrls : [Text];
+    materials : [Text];
+    outcomes : Text;
+    scope : Text;
+    title : Text
+  };
+type ServiceType__884622535 =
+  {#Architectural; #Consultation; #Interior; #Renovation; #SpacePlanning};
+type Timestamp__301639476 = Int;
+actor {
+  stable adminCredentials : {var passwordHash : Blob; var username : Text};
+  stable heroImages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Text]];
+      var elementIndex : Nat__490723111
+    };
+  stable inquiries :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Inquiry__159127206]];
+      var elementIndex : Nat__490723111
+    };
+  stable var nextInquiryId : Nat;
+  stable projectCounter : {var value : Nat};
+  stable projects :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Project__614212307]];
+      var elementIndex : Nat__490723111
+    }
+};

@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: "Cormorant Garamond";
+    --font-body: "DM Sans";
+    --font-mono: monospace;
+    --radius: 0rem;
+
+    /* Light mode — keep tokens valid but app always uses dark */
+    --background: 0.96 0.005 75;
+    --foreground: 0.12 0.01 50;
+    --card: 0.98 0.005 75;
+    --card-foreground: 0.12 0.01 50;
+    --popover: 0.98 0.005 75;
+    --popover-foreground: 0.12 0.01 50;
+
+    --primary: 0.65 0.1 88;
+    --primary-foreground: 0.06 0.005 75;
+
+    --secondary: 0.92 0.01 75;
+    --secondary-foreground: 0.2 0.01 50;
+    --muted: 0.92 0.01 75;
+    --muted-foreground: 0.5 0.01 50;
+
+    --accent: 0.65 0.1 88;
+    --accent-foreground: 0.06 0.005 75;
+
+    --destructive: 0.5 0.2 25;
+    --destructive-foreground: 0.96 0.01 25;
+
+    --border: 0.88 0.01 75;
+    --input: 0.88 0.01 75;
+    --ring: 0.65 0.1 88;
+
+    --chart-1: 0.65 0.1 88;
+    --chart-2: 0.6 0.08 160;
+    --chart-3: 0.75 0.12 85;
+    --chart-4: 0.65 0.1 140;
+    --chart-5: 0.6 0.1 50;
+
+    --sidebar: 0.98 0.005 75;
+    --sidebar-foreground: 0.12 0.01 50;
+    --sidebar-primary: 0.65 0.1 88;
+    --sidebar-primary-foreground: 0.06 0.005 75;
+    --sidebar-accent: 0.92 0.01 75;
+    --sidebar-accent-foreground: 0.2 0.01 50;
+    --sidebar-border: 0.88 0.01 75;
+    --sidebar-ring: 0.65 0.1 88;
+  }
+
+  /* Dark — pure editorial black, gold accent, warm off-white text */
+  .dark {
+    --background: 0.07 0.005 75;
+    --foreground: 0.93 0.01 75;
+    --card: 0.09 0.005 75;
+    --card-foreground: 0.93 0.01 75;
+    --popover: 0.1 0.005 75;
+    --popover-foreground: 0.93 0.01 75;
+
+    /* Gold/champagne primary — #c9a84c ≈ oklch(0.69 0.1 80) */
+    --primary: 0.69 0.1 80;
+    --primary-foreground: 0.07 0.005 75;
+
+    --secondary: 0.13 0.005 75;
+    --secondary-foreground: 0.85 0.01 75;
+    --muted: 0.13 0.005 75;
+    --muted-foreground: 0.55 0.01 75;
+
+    --accent: 0.69 0.1 80;
+    --accent-foreground: 0.07 0.005 75;
+
+    --destructive: 0.55 0.2 25;
+    --destructive-foreground: 0.96 0.01 25;
+
+    --border: 0.14 0.005 75;
+    --input: 0.14 0.005 75;
+    --ring: 0.69 0.1 80;
+
+    --chart-1: 0.69 0.1 80;
+    --chart-2: 0.65 0.08 160;
+    --chart-3: 0.75 0.12 85;
+    --chart-4: 0.65 0.1 140;
+    --chart-5: 0.62 0.1 50;
+
+    --sidebar: 0.09 0.005 75;
+    --sidebar-foreground: 0.93 0.01 75;
+    --sidebar-primary: 0.69 0.1 80;
+    --sidebar-primary-foreground: 0.07 0.005 75;
+    --sidebar-accent: 0.13 0.005 75;
+    --sidebar-accent-foreground: 0.85 0.01 75;
+    --sidebar-border: 0.14 0.005 75;
+    --sidebar-ring: 0.69 0.1 80;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #0a0a0a;
+    color: #f0ede8;
+    font-family: var(--font-body), "DM Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  /* Transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Typography scale */
+  .text-hero {
+    font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  .text-section-heading {
+    font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Gold label */
+  .text-label {
+    font-family: var(--font-body), "DM Sans", sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #c9a84c;
+  }
+
+  /* Project index numbers */
+  .project-index {
+    font-family: var(--font-body), "DM Sans", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: rgba(201, 168, 76, 0.7);
+  }
+
+  /* Thin rule dividers */
+  .divider-line {
+    height: 1px;
+    background-color: #1e1e1e;
+    width: 100%;
+  }
+
+  .divider-gold {
+    height: 1px;
+    background-color: #c9a84c;
+    opacity: 0.35;
+    width: 100%;
+  }
+
+  /* Card editorial */
+  .card-editorial {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Shadows */
+  .shadow-editorial {
+    box-shadow: none;
+  }
+
+  /* Section spacing */
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-top: 9rem;
+      padding-bottom: 9rem;
+    }
+  }
+
+  /* Entrance animations */
+  .fade-in-up {
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Gold shimmer on headings */
+  .text-shimmer {
+    background: linear-gradient(
+      90deg,
+      #f0ede8 0%,
+      #c9a84c 40%,
+      #f0ede8 60%,
+      #f0ede8 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: 200% center;
+    }
+    to {
+      background-position: -200% center;
+    }
+  }
+
+  /* Hover lift */
+  .hover-lift {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
